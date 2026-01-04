@@ -51,6 +51,15 @@
             border: 1px solid rgba(255, 255, 255, 0.25);
             width: 100%;
             max-width: 450px;
+            /* Fixed height with scroll if needed */
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .content {
+            /* This wrapper ensures form stays at top */
+            display: flex;
+            flex-direction: column;
         }
         
         h1 {
@@ -64,12 +73,14 @@
             color: transparent;
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
             font-weight: 700;
+            flex-shrink: 0;
         }
         
         .logo {
             text-align: center;
             margin-bottom: 15px;
             font-size: 1.6rem;
+            flex-shrink: 0;
         }
         
         .logo span {
@@ -82,6 +93,7 @@
         
         .form-group {
             margin-bottom: 20px;
+            flex-shrink: 0;
         }
         
         label {
@@ -132,6 +144,7 @@
                 0 4px 4px rgba(0, 0, 0, 0.08);
             transition: all 0.2s ease;
             text-transform: uppercase;
+            flex-shrink: 0;
         }
         
         button:hover:not(:disabled) {
@@ -166,6 +179,12 @@
                 0 4px 12px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.35);
             animation: fadeIn 0.3s ease;
+            /* Fixed height with scroll if content overflows */
+            max-height: 200px;
+            overflow-y: auto;
+            /* Allow shrinking but not growing beyond container */
+            flex-shrink: 1;
+            min-height: 80px;
         }
         
         @keyframes fadeIn {
@@ -177,6 +196,7 @@
             margin: 8px 0;
             font-size: 1.1rem;
             color: #333;
+            word-break: break-word;
         }
         
         #result p:first-child {
@@ -216,6 +236,7 @@
             
             .container {
                 padding: 25px 20px;
+                max-height: 85vh;
             }
             
             h1 {
@@ -235,32 +256,68 @@
             #result {
                 padding: 16px;
                 margin-top: 20px;
+                max-height: 180px;
             }
+        }
+        
+        /* Custom scrollbar */
+        .container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        .container::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            border-radius: 4px;
+        }
+        
+        .container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #5a6fd8, #6a4a9a);
+        }
+        
+        #result::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        #result::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        
+        #result::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            border-radius: 3px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">
-            <span>🚖 FARE CALCULATOR</span>
-        </div>
-        <h1>Calculate Your Fare</h1>
-        <form id="fareForm">
-            <div class="form-group">
-                <label for="from">📍 From City:</label>
-                <input type="text" id="from" name="from" required 
-                       placeholder="Enter departure city...">
+        <div class="content">
+            <div class="logo">
+                <span>🚖 FARE CALCULATOR</span>
             </div>
-            
-            <div class="form-group">
-                <label for="to">🎯 To City:</label>
-                <input type="text" id="to" name="to" required 
-                       placeholder="Enter destination city...">
-            </div>
+            <h1>Calculate Your Fare</h1>
+            <form id="fareForm">
+                <div class="form-group">
+                    <label for="from">📍 From City:</label>
+                    <input type="text" id="from" name="from" required 
+                           placeholder="Enter departure city...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="to">🎯 To City:</label>
+                    <input type="text" id="to" name="to" required 
+                           placeholder="Enter destination city...">
+                </div>
 
-            <button type="submit">🚀 Calculate Fare</button>
-        </form>
-        <div id="result"></div>
+                <button type="submit">🚀 Calculate Fare</button>
+            </form>
+            <div id="result"></div>
+        </div>
     </div>
 
     <script>
