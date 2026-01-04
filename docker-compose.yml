@@ -1,0 +1,7 @@
+version: '3.8'
+
+services:
+  fare-calculator:
+    build: .
+    ports:
+      - "5005:5005"

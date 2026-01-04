@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fare Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(to bottom, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #add8e6;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        input, button {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fare Calculator</h1>
+        <form id="fareForm">
+            <label for="from">From City:</label>
+            <input type="text" id="from" name="from" required>
+
+            <label for="to">To City:</label>
+            <input type="text" id="to" name="to" required>
+
+            <button type="submit">Calculate Fare</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('fareForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const button = document.querySelector('button[type="submit"]');
+            const resultDiv = document.getElementById('result');
+            
+            // Show calculating state
+            button.textContent = 'Calculating...';
+            button.disabled = true;
+            resultDiv.innerHTML = '';
+            
+            const fromCity = document.getElementById('from').value;
+            const toCity = document.getElementById('to').value;
+            
+            fetch('/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'from': fromCity,
+                    'to': toCity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    resultDiv.innerHTML = `<p class="error">${data.error}</p>`;
+                } else {
+                    resultDiv.innerHTML = `
+                        <p>Distance: ${data.distance} km</p>
+                        <p>Estimated Fare: Rs ${data.fare}</p>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultDiv.innerHTML = '<p class="error">An error occurred. Please try again.</p>';
+            })
+            .finally(() => {
+                // Reset button state
+                button.textContent = 'Calculate Fare';
+                button.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
